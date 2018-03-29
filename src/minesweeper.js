@@ -21,10 +21,11 @@ const generateBombBoard = (rows, columns, bombs) => {
   }
   let bombsPlaced = 0;
   while (bombsPlaced < bombs) {
-    const x = Math.floor(Math.random() * columns);
-    const y = Math.floor(Math.random() * rows);
-    if (board[x][y]===null) {
-      board[x][y] = 'B';
+    const r = Math.floor(Math.random() * rows);
+    const c = Math.floor(Math.random() * columns);
+
+    if (board[r][c]===null) {
+      board[r][c] = 'B';
       bombsPlaced++;
     }
   }
