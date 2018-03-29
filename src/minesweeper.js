@@ -1,35 +1,65 @@
 const generatePlayerBoard = (rows, columns) => {
-  let board = [];
+  let playerBoard = [];
   for (let i = 0; i < rows; i++) {
     let row = [];
     for (let j = 0; j < columns; j++) {
       row.push(' ');
     }
-    board.push(row);
+    playerBoard.push(row);
   }
-  return board;
+  return playerBoard;
 };
 
 const generateBombBoard = (rows, columns, bombs) => {
-  let board = [];
+  let bombBoard = [];
+  let bombsPlaced = 0;
   for (let i = 0; i < rows; i++) {
     let row = [];
     for (let j = 0; j < columns; j++) {
       row.push(null);
     }
-    board.push(row);
+    bombBoard.push(row);
   }
-  let bombsPlaced = 0;
   while (bombsPlaced < bombs) {
     const r = Math.floor(Math.random() * rows);
     const c = Math.floor(Math.random() * columns);
-
-    if (board[r][c]===null) {
-      board[r][c] = 'B';
+    if (bombBoard[r][c]===null) {
+      bombBoard[r][c] = 'B';
       bombsPlaced++;
     }
   }
-  return board;
+  return bombBoard;
+};
+
+const getNumberOfNeighborBombs = (bombBoard, rowIndex, columnIndex) => {
+  const neighborOffsets = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+  const numberOfRows = bombBoard.length;
+  const numberOfColumns = bombBoard[0].length;
+  let numberOfBombs = 0;
+  neighborOffsets.forEach(offset => {
+    const neighborRowIndex = rowIndex + offset[0];
+    const neighborColumnIndex = columnIndex + offset[1];
+
+    // Attempt to refactor this into two complex inequalities ( 0 <= x <= numberOfy)
+    if (neighborRowIndex >= 0 && neighborRowIndex <= numberOfRows && neighborColumnIndex >= 0 && neighborColumnIndex <= numberOfColumns){
+      if (bombBoard[neighborRowIndex][neighborColumnIndex]==='B') {
+        numberOfBombs ++;
+      }
+    }
+  });
+  return numberOfBombs;
+}
+
+const flipTile = (playerBoard, bombBoard, rowIndex, columnIndex)=> {
+  if (playerBoard[rowIndex][columnIndex] !== ' '){
+    console.log('This tile has already been flipped!');
+    return;
+  } else if (bombBoard[rowIndex][columnIndex] === 'B') {
+    playerBoard[rowIndex][columnIndex] = 'B';
+    console.log("You're Dead!!");
+  } else {
+    playerBoard[rowIndex][columnIndex] = getNumberOfNeighborBombs(bombBoard, rowIndex, columnIndex);
+  }
 };
 
 const printBoard = (board) => {
@@ -44,75 +74,6 @@ printBoard(playerBoard);
 console.log('Bomb Board: ');
 printBoard(bombBoard);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-// const printBoard = (board)=> {
-//   console.log('Current Board:');
-//   console.log(board[0].join(' | '));
-//   console.log(board[1].join(' | '));
-//   console.log(board[2].join(' | '));
-// }
-//
-// const board = [
-//   [' ', ' ', ' '],
-//   [' ', ' ', ' '],
-//   [' ', ' ', ' ']
-// ];
-//
-// printBoard(board);
-//
-// let guess = board[0][1] = '1'
-// let mine = board[2][2] = 'B'
-//
-// printBoard(board);
-//
-//
-// const gameBoard = [];
-// const gameBoardRow = [];
-//
-// let numberOfRows = 5;
-// let numberOfColumns = 10;
-//
-// for (let j = 0; j < numberOfColumns; j++) {
-//   gameBoardRow.push(' ');
-// }
-// for (let i = 0; i < numberOfRows; i++) {
-//   gameBoard.push(gameBoardRow);
-// }
-// console.log('Current Board:')
-// for (let k = 0; k < gameBoard.length; k++) {
-//   console.log(gameBoard[k].join(' | '));
-// }
+flipTile(playerBoard, bombBoard, 0, 0);
+console.log('Updated Player Board: ');
+printBoard(playerBoard);
