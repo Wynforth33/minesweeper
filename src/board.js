@@ -1,25 +1,4 @@
-class Game {
-  constructor(numberOfRows, numberOfColumns, numberOfBombs){
-    this._board = new Board(numberOfRows, numberOfColumns, numberOfBombs);
-  }
-
-  playMove(rowIndex, columnIndex){
-    this._board.flipTile(rowIndex, columnIndex);
-    if (this._board.playerBoard[rowIndex][columnIndex] === 'B'){
-      console.log('You Lose; Fatality! Final Board: ');
-      this._board.print(this._board.playerBoard);
-      console.log('Bomb Board: ')
-      this._board.print(this._board.bombBoard);
-    } else if (!this._board.hasSafeTiles()) {
-      console.log('The Dirty Work is Over.. Go Have A Drink!! Final Player Board: ');
-    } else {
-      console.log('Current Board: ')
-      this._board.print(this._board.playerBoard);
-    }
-  }
-}
-
-class Board {
+export class Board {
   constructor(numberOfRows, numberOfColumns, numberOfBombs) {
     this._numberOfBombs = numberOfBombs;
     this._numberOfTiles = numberOfRows * numberOfColumns;
@@ -108,6 +87,3 @@ class Board {
     return bombBoard;
   }
 }
-
-const game = new Game(20,20,100);
-game.playMove(0,0);
