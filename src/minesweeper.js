@@ -7,17 +7,14 @@ class Game {
     this._board.flipTile(rowIndex, columnIndex);
     if (this._board.playerBoard[rowIndex][columnIndex] === 'B'){
       console.log('You Lose; Fatality! Final Board: ');
-      this._board.print(this._playerBoard);
+      this._board.print(this._board.playerBoard);
       console.log('Bomb Board: ')
-      this._board.print(this._bombBoard);
+      this._board.print(this._board.bombBoard);
     } else if (!this._board.hasSafeTiles()) {
       console.log('The Dirty Work is Over.. Go Have A Drink!! Final Player Board: ');
-      this._board.print(this._playerBoard);
-      console.log('Bomb Board: ')
-      this._board.print(this._bombBoard);
     } else {
       console.log('Current Board: ')
-      this._board.print(this._playerBoard);
+      this._board.print(this._board.playerBoard);
     }
   }
 }
@@ -34,13 +31,17 @@ class Board {
     return this._playerBoard;
   }
 
+  get bombBoard() {
+    return this._bombBoard;
+  }
+
   flipTile(rowIndex, columnIndex) {
     if (this._playerBoard[rowIndex][columnIndex] !== ' '){
       console.log('This tile has already been flipped!');
       return;
     } else if (this._bombBoard[rowIndex][columnIndex] === 'B') {
       this._playerBoard[rowIndex][columnIndex] = 'B';
-      console.log("You're Dead!!");
+      console.log("BOOOOOOOM!!! You have found a Bomb!")
     } else {
       this._playerBoard[rowIndex][columnIndex] = this.getNumberOfNeighborBombs(rowIndex, columnIndex);
     }
@@ -70,8 +71,8 @@ class Board {
     return this._numberOfTiles !== this._numberOfBombs;
   }
 
-  print() {
-    console.log(this._playerBoard.map(row => row.join(' | ')).join('\n'));
+  print(board) {
+    console.log(board.map(row => row.join(' | ')).join('\n'));
   }
 
   static generatePlayerBoard(rows, columns) {
@@ -92,14 +93,14 @@ class Board {
     for (let i = 0; i < rows; i++) {
       let row = [];
       for (let j = 0; j < columns; j++) {
-        row.push(null);
+        row.push(' ');
       }
       bombBoard.push(row);
     }
     while (bombsPlaced < bombs) {
       const r = Math.floor(Math.random() * rows);
       const c = Math.floor(Math.random() * columns);
-      if (bombBoard[r][c]===null) {
+      if (bombBoard[r][c]===' ') {
         bombBoard[r][c] = 'B';
         bombsPlaced++;
       }
@@ -108,5 +109,5 @@ class Board {
   }
 }
 
-const game = new Game(3,3,3);
+const game = new Game(20,20,100);
 game.playMove(0,0);
